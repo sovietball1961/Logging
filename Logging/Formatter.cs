@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Logging {
     public class Formatter {
-        private string format;
-        private string dateFormat;
+        private static string format;
+        private static string dateFormat;
 
-        public string BuildLogMessage(Level level, string message) {
+        internal string BuildLogMessage(Level level, string message) {
             string logMsg = format;
 
             if (Regex.IsMatch(format, @"{asctime}")) {
@@ -26,19 +26,32 @@ namespace Logging {
             return logMsg;
         }
 
-        public string Format {
+        public static string Format {
             set {
                 if (string.IsNullOrEmpty(value)) {
-                    format = value;
+                    var err = LoggerError.Status.FormatNotDefined;
+                    var msg = err.GetStatusInfo();
+                    var cod = err.GetStatusCode();
+                    throw new FormatException($"{msg} code:{cod}");
                 }
                 else {
-                    throw new ArgumentException();
+                    format = value;
                 }
             }
         }
 
-        public string DateFormat {
-            set { dateFormat = value; }
+        public static string DateFormat {
+            set {
+                if (string.IsNullOrEmpty(value)) {
+                    var err = LoggerError.Status.NemuikedoNerenai;
+                    var msg = err.GetStatusInfo();
+                    var cod = err.GetStatusCode();
+                    throw new FormatException($"{msg} code:{cod}");
+                }
+                else {
+                    dateFormat = value;
+                }
+            }
         }
     }
 }
