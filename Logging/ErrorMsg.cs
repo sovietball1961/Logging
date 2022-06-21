@@ -23,9 +23,6 @@ namespace Logging {
         }
     }
 
-    /// <summary>
-    /// Enumに文字列を付加するためのAttributeクラス
-    /// </summary>
     public class StatusInfoAttribute : Attribute {
         public string StatusInfo { get; internal set; }
 

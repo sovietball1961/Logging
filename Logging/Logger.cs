@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Logging {
-    public class Logger {
+    public class Logger : ILogger {
         public Formatter Formatter {
             private get; set; 
         }
@@ -53,5 +53,13 @@ namespace Logging {
                 StreamFile();
             }
         }
+    }
+
+    public interface ILogger {
+        void Critical(string message, ConsoleColor color = ConsoleColor.White);
+        void Error(string message, ConsoleColor color = ConsoleColor.White);
+        void Warning(string message, ConsoleColor color = ConsoleColor.White);
+        void Info(string message, ConsoleColor color = ConsoleColor.White);
+        void Debug(string message, ConsoleColor color = ConsoleColor.White);
     }
 }

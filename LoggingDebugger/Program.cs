@@ -9,7 +9,8 @@ using Logging;
 namespace LoggingDebugger {
     internal class Program {
         static void Main(string[] args) {
-            Formatter.DateFormat = "";
+            Formatter formatter = new Formatter() {
+            };
             Console.ReadKey();
         }
     }
