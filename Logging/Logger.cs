@@ -7,15 +7,25 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Logging {
-    public class Logger : ILogger {
+    public class Logger {
+        private Formatter formatter;
+        private FileHandler fileHandler;
+        private StreamHandler streamHandler;
+
         public Formatter Formatter {
-            private get; set; 
-        }
+            set {
+                formatter = value.GetType() == typeof(Formatter) ? value : null;
+            }
+        } 
         public FileHandler FileHandler {
-            private get; set; 
+            set {
+                fileHandler = value.GetType() == typeof(FileHandler) ? value : null;
+            }
         }
         public StreamHandler StreamHandler {
-            private get; set;
+            set {
+                streamHandler = value.GetType() == typeof(StreamHandler) ? value : null;
+            }
         }
 
         public void Critical(string message, ConsoleColor color = ConsoleColor.White) =>
@@ -34,7 +44,7 @@ namespace Logging {
             LoggerCommon(Level.Debug, message, color);
 
         private void LoggerCommon(Level level, string message, ConsoleColor color) {
-            string logMessage = this.Formatter.BuildLogMessage(level, message);
+            string logMessage = this.formatter.BuildLogMessage(level, message);
 
             void StreamConsole() {
                 Console.ForegroundColor = color;
@@ -42,24 +52,17 @@ namespace Logging {
                 Console.ResetColor();
             }
             void StreamFile() {
-                using(FileStream fs = new FileStream(this.FileHandler.FilePath, this.FileHandler.Mode)) {
-
+                bool isAppend = this.fileHandler.Mode == FileMode.Append ? true : false;
+                using (StreamWriter writer = new StreamWriter(this.fileHandler.LogName, isAppend)) {
+                    
                 }
             }
-            if (this.StreamHandler.MinLevel > level) {
+            if (this.streamHandler.MinLevel > level) {
                 StreamConsole();
             }
-            if (this.FileHandler.MinLevel > level) {
+            if (this.fileHandler.MinLevel > level) {
                 StreamFile();
             }
         }
-    }
-
-    public interface ILogger {
-        void Critical(string message, ConsoleColor color = ConsoleColor.White);
-        void Error(string message, ConsoleColor color = ConsoleColor.White);
-        void Warning(string message, ConsoleColor color = ConsoleColor.White);
-        void Info(string message, ConsoleColor color = ConsoleColor.White);
-        void Debug(string message, ConsoleColor color = ConsoleColor.White);
     }
 }

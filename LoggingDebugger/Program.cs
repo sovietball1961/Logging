@@ -9,9 +9,9 @@ using Logging;
 namespace LoggingDebugger {
     internal class Program {
         static void Main(string[] args) {
-            Formatter formatter = new Formatter() {
+            var logger = new Logger() {
+                Formatter = null
             };
-            Console.ReadKey();
         }
     }
 }

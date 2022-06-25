@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Logging {
     internal static class LoggerError {
-        public enum Status {
+        public enum Status {         
             FormatNotDefined,
-
-            [StatusInfo("最近寝不足なんだよね"), StatusCode(114514)]
-            NemuikedoNerenai
+            DateFormatNotDefined,
         }
     }
 

@@ -1,58 +1,38 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Logging {
     public class Formatter {
-        private string format;
-        private string dateFormat;
+        public string Format { get; set; }
+        public string DateFormat { get; set; }
 
         internal string BuildLogMessage(Level level, string message) {
-            string logMsg = this.format;
-
-            if (Regex.IsMatch(format, @"{asctime}")) {
-                logMsg = Regex.Replace(logMsg, @"{asctime}", DateTime.Now.ToString(dateFormat));
+            if (string.IsNullOrEmpty(this.Format)) {
+                var err = LoggerError.Status.FormatNotDefined;
+                throw new FormatException($"{err.GetStatusInfo()} Code:{err.GetStatusCode()}");
             }
-            if (Regex.IsMatch(format, @"{level}")) {
+            if (string.IsNullOrEmpty(this.DateFormat)) {
+                var err = LoggerError.Status.DateFormatNotDefined;
+                throw new FormatException($"{err.GetStatusInfo()} Cpde:{err.GetStatusCode()}");
+            }
+
+            string logMsg = this.Format;
+
+            if (Regex.IsMatch(this.Format, @"{asctime}")) {
+                logMsg = Regex.Replace(logMsg, @"{asctime}", DateTime.Now.ToString(this.DateFormat));
+            }
+            if (Regex.IsMatch(this.Format, @"{level}")) {
                 logMsg = Regex.Replace(logMsg, @"{level}", level.ToString());
             }
-            if (Regex.IsMatch(format, @"{message}")) {
+            if (Regex.IsMatch(this.Format, @"{message}")) {
                 logMsg = Regex.Replace(logMsg, @"{message}", message);
             }
-
             return logMsg;
-        }
-
-        public string Format {
-            set {
-                if (string.IsNullOrEmpty(value)) {
-                    var err = LoggerError.Status.FormatNotDefined;
-                    var msg = err.GetStatusInfo();
-                    var cod = err.GetStatusCode();
-                    format = null;
-                }
-                else {
-                    format = value;
-                }
-            }
-
-        }
-
-        public string DateFormat {
-            set {
-                if (string.IsNullOrEmpty(value)) {
-                    var err = LoggerError.Status.FormatNotDefined;
-                    var msg = err.GetStatusInfo();
-                    var cod = err.GetStatusCode();
-                    throw new FormatException($"{msg} code:{cod}");
-                }
-                else {
-                    dateFormat = value;
-                }
-            }
         }
     }
 }

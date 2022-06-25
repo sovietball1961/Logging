@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Logging {
     public class FileHandler {
         public bool IsEnable { get; set; }
-        public string FilePath { get; set; }
+        public string LogDirectory { get; set; }
+        public string LogName { get; set; }
         public FileMode Mode { get; set; }
         public Level MinLevel { get; set; }
     }
